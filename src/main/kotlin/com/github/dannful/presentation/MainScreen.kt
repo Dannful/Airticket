@@ -8,15 +8,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.awt.ComposeWindow
 import androidx.compose.ui.unit.dp
-import com.github.dannful.core.LocalWindow
+import java.io.File
+import javax.swing.JFileChooser
+import javax.swing.filechooser.FileNameExtensionFilter
+
+private const val EXTENSION = "lfa"
+private fun retrieveFile(window: ComposeWindow): File? {
+    val fileChooser = JFileChooser()
+    fileChooser.fileFilter = FileNameExtensionFilter("Automaton files", EXTENSION)
+    fileChooser.showOpenDialog(window)
+    return fileChooser.selectedFile
+}
 
 @Composable
 @Preview
-fun MainScreen(onManualInput: () -> Unit) {
+fun MainScreen(window: ComposeWindow, onManualInput: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(text = "Welcome! Choose your interaction method:")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)) {
@@ -24,7 +33,10 @@ fun MainScreen(onManualInput: () -> Unit) {
                 Text(text = "Manual input")
             }
             Button(onClick = {
-
+                val file = retrieveFile(window)
+                if (file != null) {
+                    window.dispose()
+                }
             }) {
                 Text(text = "Load file")
             }

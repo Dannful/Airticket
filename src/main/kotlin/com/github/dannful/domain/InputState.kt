@@ -124,7 +124,7 @@ class InputState {
 
     private fun processMinors(input: String): InputProcessResult {
         val previousState = state
-        state = when(input) {
+        state = when (input) {
             Alphabet.MINORS_ABOVE_TWO -> 12U
             Alphabet.MINORS_UNDER_TWO -> 11U
             else -> return InputProcessResult.UNDEFINED_FUNCTION
@@ -134,10 +134,10 @@ class InputState {
     }
 
     private fun processAdultsOrMinors(input: String): InputProcessResult {
-        if(processPrevious(input, 7U))
+        if (processPrevious(input, 7U))
             return InputProcessResult.INPUT_OK
         val previousState = state
-        state = when(input) {
+        state = when (input) {
             Alphabet.ADULTS -> 12U
             Alphabet.MINORS -> 9U
             else -> return InputProcessResult.UNDEFINED_FUNCTION
@@ -178,7 +178,7 @@ class InputState {
                 ) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
             }
 
-            14U -> processState(input, 15U) { s ->
+            14U -> processState(input, 13U, 15U) { s ->
                 return@processState if (s == Alphabet.FINISH) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
             }
 
@@ -195,7 +195,14 @@ class InputState {
                 ) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
             }
 
-            18U -> processState(input, 0U, 19U, ::processNumber)
+            18U -> processState(input, 0U, 19U) { s ->
+                if (s.toUIntOrNull() == null)
+                    return@processState InputProcessResult.UNDEFINED_FUNCTION
+                if (s.length in 3..4)
+                    return@processState InputProcessResult.INPUT_OK
+                return@processState InputProcessResult.UNDEFINED_FUNCTION
+            }
+
             19U -> processState(input, 0U, 20U, ::processText)
             20U -> InputProcessResult.FINAL_STATE
             else -> InputProcessResult.UNDEFINED_FUNCTION
