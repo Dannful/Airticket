@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import com.github.dannful.domain.Alphabet
 import com.github.dannful.domain.InputState
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ColumnScope.Choices(inputState: InputState) {
     when (inputState.state) {
@@ -52,6 +51,11 @@ fun ColumnScope.Choices(inputState: InputState) {
             inputState.receiveInput(Alphabet.FINISH)
         }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
             Text(text = "Finish")
+        }
+        20U -> Button(onClick = {
+            inputState.reset()
+        }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(text = "Recomeçar")
         }
     }
 }

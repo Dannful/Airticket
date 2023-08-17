@@ -25,17 +25,19 @@ private fun retrieveFile(window: ComposeWindow): File? {
 
 @Composable
 @Preview
-fun MainScreen(window: ComposeWindow, onManualInput: () -> Unit) {
+fun MainScreen(window: ComposeWindow, onManualInput: (File?) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(text = "Welcome! Choose your interaction method:")
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)) {
-            Button(onClick = onManualInput) {
+            Button(onClick = {
+                onManualInput(null)
+            }) {
                 Text(text = "Manual input")
             }
             Button(onClick = {
                 val file = retrieveFile(window)
                 if (file != null) {
-                    window.dispose()
+                    onManualInput(file)
                 }
             }) {
                 Text(text = "Load file")

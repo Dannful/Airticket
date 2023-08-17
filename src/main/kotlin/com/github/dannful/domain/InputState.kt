@@ -15,6 +15,11 @@ class InputState {
 
     val answers = mutableStateMapOf<UInt, String>()
 
+    fun reset() {
+        state = 0U
+        answers.clear()
+    }
+
     private fun processPrevious(input: String, newState: UInt): Boolean {
         if (input == Alphabet.PREVIOUS) {
             state = newState

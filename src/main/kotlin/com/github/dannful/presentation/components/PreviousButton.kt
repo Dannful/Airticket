@@ -16,11 +16,15 @@ import com.github.dannful.domain.Alphabet
 import com.github.dannful.domain.InputState
 
 @Composable
-fun ColumnScope.PreviousButton(inputState: InputState) {
+fun ColumnScope.PreviousButton(inputState: InputState, onReturn: () -> Unit) {
     Box(modifier = Modifier.height(80.dp).align(Alignment.Start)) {
         when (inputState.state) {
-            1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 12U, 13U, 14U, 15U, 16U, 17U, 18U, 19U -> IconButton(
+            0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 12U, 13U, 14U, 15U, 16U, 17U, 18U, 19U -> IconButton(
                 onClick = {
+                    if(inputState.state == 0U) {
+                        onReturn()
+                        return@IconButton
+                    }
                     inputState.receiveInput(Alphabet.PREVIOUS)
                 }
             ) {
