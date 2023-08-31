@@ -9,12 +9,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.dannful.domain.InputState
 import com.github.dannful.presentation.components.*
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collectLatest
 import java.io.File
 
 
 fun processLoadedFile(inputState: InputState, loadedFile: File?) {
     if (loadedFile != null) {
-        val inputs = loadedFile.readText().split(", ")
+        val inputs = loadedFile.readLines()[1].split(", ")
         inputs.forEach {
             inputState.receiveInput(it.trim())
         }
@@ -22,10 +24,13 @@ fun processLoadedFile(inputState: InputState, loadedFile: File?) {
 }
 
 @Composable
-fun InputScreen(loadedFile: File?, onReturn: () -> Unit) {
+fun InputScreen(fileFlow: SharedFlow<File>, onReturn: () -> Unit) {
     val inputState = remember { InputState() }
     LaunchedEffect(Unit) {
-        processLoadedFile(inputState, loadedFile)
+        fileFlow.collectLatest {
+            inputState.reset()
+            processLoadedFile(inputState, it)
+        }
     }
     Column(
         modifier = Modifier.padding(16.dp).size(800.dp),

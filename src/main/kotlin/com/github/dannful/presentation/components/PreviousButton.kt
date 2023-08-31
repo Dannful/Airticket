@@ -25,7 +25,7 @@ fun ColumnScope.PreviousButton(inputState: InputState, onReturn: () -> Unit) {
                         onReturn()
                         return@IconButton
                     }
-                    inputState.receiveInput(Alphabet.PREVIOUS)
+                    inputState.receiveInput(if(inputState.state < 15U) Alphabet.PREVIOUS else Alphabet.CANCEL)
                 }
             ) {
                 Icon(

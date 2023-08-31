@@ -21,7 +21,8 @@ class InputState {
     }
 
     private fun processPrevious(input: String, newState: UInt): Boolean {
-        if (input == Alphabet.PREVIOUS) {
+        if (state < 15U && input == Alphabet.PREVIOUS || state >= 15U && input == Alphabet.CANCEL) {
+			answers[state] = input
             state = newState
             return true
         }
@@ -75,19 +76,6 @@ class InputState {
     ): InputProcessResult {
         if (processPrevious(input, previousState))
             return InputProcessResult.INPUT_OK
-        if (function(input) == InputProcessResult.INPUT_OK) {
-            answers[state] = input
-            state = newState
-            return InputProcessResult.INPUT_OK
-        }
-        return InputProcessResult.UNDEFINED_FUNCTION
-    }
-
-    private fun processState(
-        input: String,
-        newState: UInt,
-        function: (String) -> InputProcessResult
-    ): InputProcessResult {
         if (function(input) == InputProcessResult.INPUT_OK) {
             answers[state] = input
             state = newState
@@ -188,15 +176,21 @@ class InputState {
             }
 
             15U -> processState(input, 0U, 16U) { s ->
-                val creditNumber = s.toLongOrNull() ?: return@processState InputProcessResult.UNDEFINED_FUNCTION
-                return@processState if (CreditCard.isValid(creditNumber)) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
+                if (s.toLongOrNull() == null)
+                    return@processState InputProcessResult.UNDEFINED_FUNCTION
+                return@processState if (s.length in listOf(
+                        15,
+                        16
+                    )
+                ) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
             }
 
             16U -> processState(input, 0U, 17U, ::processMonth)
             17U -> processState(input, 0U, 18U) { s ->
                 val year = s.toIntOrNull() ?: return@processState InputProcessResult.UNDEFINED_FUNCTION
-                return@processState if (year >= Calendar.getInstance()
-                        .get(Calendar.YEAR)
+                val lastTwo = year % 100
+                return@processState if (lastTwo >= Calendar.getInstance()
+                        .get(Calendar.YEAR) % 100
                 ) InputProcessResult.INPUT_OK else InputProcessResult.UNDEFINED_FUNCTION
             }
 

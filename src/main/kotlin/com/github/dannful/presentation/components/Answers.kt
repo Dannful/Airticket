@@ -7,30 +7,31 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposeDialog
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.github.dannful.domain.InputState
+import java.awt.Dimension
 
 @Composable
 fun ColumnScope.Answers(inputState: InputState) {
-    var isVisible by rememberSaveable { mutableStateOf(false) }
+    val composeDialog = remember {
+        ComposeDialog().apply {
+            size = Dimension(400, 400)
+            isVisible = false
+            title = "Previous answers"
+        }
+    }
     Button(onClick = {
-        isVisible = !isVisible
+        composeDialog.isVisible = !composeDialog.isVisible
     }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
         Text(text = "Ver respostas")
     }
-    Dialog(visible = isVisible, dispose = {
-        isVisible = false
-        it.dispose()
-    }, create = {
-        ComposeDialog()
+    Dialog(visible = composeDialog.isVisible, dispose = ComposeDialog::dispose, create = {
+        composeDialog
     }) {
         LazyColumn(
             modifier = Modifier.align(Alignment.CenterHorizontally),

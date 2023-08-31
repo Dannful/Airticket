@@ -24,12 +24,16 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "MainKt"
+        mainClass = "com.github.dannful.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "LFA"
             packageVersion = "1.0.0"
+
+            windows {
+                iconFile.set(project.file("src/main/resources/vin.ico"))
+            }
         }
     }
 }
